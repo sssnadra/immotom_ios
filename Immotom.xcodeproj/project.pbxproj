@@ -8,7 +8,6 @@
 
 /* Begin PBXBuildFile section */
 		9C38D0E42F2E8E56000D8347 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 9C38D0E32F2E8E56000D8347 /* Assets.xcassets */; };
-		9C38D0F22F3031BB000D8347 /* MapboxMaps in Frameworks */ = {isa = PBXBuildFile; productRef = 9C38D0F12F3031BB000D8347 /* MapboxMaps */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -35,16 +34,6 @@
 		9C6822472F2E3E750048AE98 /* ImmotomUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = ImmotomUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
-/* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
-		9C38D0F42F3032FB000D8347 /* Exceptions for "Immotom" folder in "Immotom" target */ = {
-			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
-			membershipExceptions = (
-				Info.plist,
-			);
-			target = 9C68222D2F2E3E750048AE98 /* Immotom */;
-		};
-/* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
-
 /* Begin PBXFileSystemSynchronizedRootGroup section */
 		9C6822402F2E3E750048AE98 /* ImmotomTests */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
@@ -58,9 +47,6 @@
 		};
 		9C6822B92F2E3EA70048AE98 /* Immotom */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
-			exceptions = (
-				9C38D0F42F3032FB000D8347 /* Exceptions for "Immotom" folder in "Immotom" target */,
-			);
 			path = Immotom;
 			sourceTree = "<group>";
 		};
@@ -71,7 +57,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				9C38D0F22F3031BB000D8347 /* MapboxMaps in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -133,7 +118,6 @@
 			);
 			name = Immotom;
 			packageProductDependencies = (
-				9C38D0F12F3031BB000D8347 /* MapboxMaps */,
 			);
 			productName = Immotom;
 			productReference = 9C68222E2F2E3E750048AE98 /* Immotom.app */;
@@ -218,7 +202,6 @@
 			mainGroup = 9C6822252F2E3E750048AE98;
 			minimizedProjectReferenceProxies = 1;
 			packageReferences = (
-				9C38D0F02F3031BB000D8347 /* XCRemoteSwiftPackageReference "mapbox-maps-ios" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 9C68222F2F2E3E750048AE98 /* Products */;
@@ -424,7 +407,7 @@
 				DEVELOPMENT_TEAM = 89H8NZ4334;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_FILE = Immotom/Info.plist;
+				INFOPLIST_FILE = "";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -457,7 +440,7 @@
 				DEVELOPMENT_TEAM = 89H8NZ4334;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_FILE = Immotom/Info.plist;
+				INFOPLIST_FILE = "";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -600,25 +583,6 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
-
-/* Begin XCRemoteSwiftPackageReference section */
-		9C38D0F02F3031BB000D8347 /* XCRemoteSwiftPackageReference "mapbox-maps-ios" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/mapbox/mapbox-maps-ios.git";
-			requirement = {
-				kind = upToNextMajorVersion;
-				minimumVersion = 11.0.0;
-			};
-		};
-/* End XCRemoteSwiftPackageReference section */
-
-/* Begin XCSwiftPackageProductDependency section */
-		9C38D0F12F3031BB000D8347 /* MapboxMaps */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 9C38D0F02F3031BB000D8347 /* XCRemoteSwiftPackageReference "mapbox-maps-ios" */;
-			productName = MapboxMaps;
-		};
-/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 9C6822262F2E3E750048AE98 /* Project object */;
 }

@@ -38,8 +38,6 @@ struct AppScaffoldView: View {
                         StartView(filters: $filters, selectedTab: $selectedTab)
                     case "Suche":
                         SearchView(filters: $filters, selectedTab: $selectedTab)
-                    case "Karte":
-                        MapScreen(selectedTab: $selectedTab)
                     case "Favoriten":
                         FavoritesView(selectedTab: $selectedTab)
                     case "Login":
