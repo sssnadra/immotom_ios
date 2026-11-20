@@ -1,95 +1,91 @@
 import SwiftUI
 
-/// Favoriten-Screen.
-///
-/// Aktueller Stand:
-/// - Favoriten sind nur als `[String]` modelliert (z.B. Titel/IDs).
-/// - Es gibt noch keine Persistenz und keine Verbindung zu `Listing`.
 struct FavoritesView: View {
-
-    /// Demo-Favoritenliste.
-    @State private var favorites: [String] = []
-
-    /// Menü-State.
-    @State private var showMenu = false
-
-    /// Tab-Steuerung in der App-Shell
+    @EnvironmentObject private var env: AppEnvironment
+    @Environment(FavoritesStore.self) private var favorites
     @Binding var selectedTab: String
 
+    @State private var listings: [Listing] = []
+    @State private var isLoading = true
+    @State private var didFail = false
+
     var body: some View {
-        ZStack(alignment: .top) {
-            VStack(spacing: 0) {
+        NavigationStack {
+            ScrollView {
+                VStack(spacing: 16) {
+                    Text("Favoriten")
+                        .font(.title2.bold())
+                        .accessibilityAddTraits(.isHeader)
+                        .padding(.top)
 
-                // Titelzeile
-                Text("Favoriten")
-                    .font(.title2)
-                    .bold()
-                    .frame(maxWidth: .infinity)
-                    .padding(.vertical, 10)
-                    .background(Color(red: 0.7, green: 0.85, blue: 0.3))
-
-                if favorites.isEmpty {
-                    // Empty State
-                    VStack {
-                        Spacer()
-
-                        Image(systemName: "star.slash")
-                            .font(.system(size: 50))
-                            .foregroundColor(.gray.opacity(0.5))
-                            .padding(.bottom, 10)
-
-                        Text("Keine Favoriten gespeichert")
-                            .font(.headline)
-                            .foregroundColor(.gray)
-
-                        Text("Speichere interessante Inserate, um sie hier später schnell wiederzufinden.")
-                            .font(.subheadline)
-                            .foregroundColor(.gray)
-                            .multilineTextAlignment(.center)
-                            .padding(.horizontal, 40)
-
-                        Spacer()
-                    }
-                    .frame(maxWidth: .infinity)
-                    .background(Color.white)
-                } else {
-                    // Favoritenliste
-                    ScrollView {
-                        VStack(spacing: 0) {
-                            ForEach(favorites, id: \.self) { item in
-                                favoriteRow(title: item)
-                            }
+                    if favorites.favoriteIDs.isEmpty {
+                        ContentUnavailableView(
+                            "Keine Favoriten gespeichert",
+                            systemImage: "star",
+                            description: Text("Tippe bei einer Immobilie auf den Stern, um sie hier wiederzufinden.")
+                        )
+                        Button {
+                            selectedTab = "Suche"
+                        } label: {
+                            Text("Immobilien suchen")
+                                .frame(minWidth: 44, minHeight: 44)
+                        }
+                        .buttonStyle(.bordered)
+                    } else if isLoading {
+                        ProgressView("Favoriten werden geladen")
+                    } else if didFail {
+                        ContentUnavailableView(
+                            "Favoriten konnten nicht geladen werden",
+                            systemImage: "exclamationmark.triangle",
+                            description: Text("Deine gespeicherten Favoriten bleiben erhalten.")
+                        )
+                        Button {
+                            Task { await loadFavorites() }
+                        } label: {
+                            Text("Erneut versuchen")
+                                .frame(minWidth: 44, minHeight: 44)
+                        }
+                        .buttonStyle(.bordered)
+                    } else if listings.isEmpty {
+                        ContentUnavailableView(
+                            "Inserate derzeit nicht verfügbar",
+                            systemImage: "house",
+                            description: Text("Deine Favoriten bleiben gespeichert.")
+                        )
+                    } else {
+                        ForEach(listings) { listing in
+                            ListingCardView(listing: listing)
                         }
                     }
                 }
+                .padding(.bottom)
             }
-            .ignoresSafeArea(edges: .top)
-
-            // SideMenu (nur sichtbar, wenn showMenu true ist)
-            if showMenu {
-                SideMenuView(isShowing: $showMenu, selectedTab: $selectedTab)
-                    .transition(.move(edge: .trailing))
-                    .zIndex(10)
+            .background(Color(.systemBackground))
+            .task(id: favorites.favoriteIDs) {
+                await loadFavorites()
             }
         }
     }
 
-    /// Eine Zeile in der Favoritenliste.
-    func favoriteRow(title: String) -> some View {
-        VStack(spacing: 0) {
-            HStack {
-                Image(systemName: "star.fill")
-                    .foregroundColor(.black)
-                Text(title)
-                Spacer()
-            }
-            .padding()
-            .background(Color.white)
-            Divider()
+    private func loadFavorites() async {
+        let requestedIDs = favorites.favoriteIDs
+        isLoading = true
+        didFail = false
+        do {
+            let result = try await env.listingsRepository.listings(ids: requestedIDs)
+            guard !Task.isCancelled, requestedIDs == favorites.favoriteIDs else { return }
+            listings = result
+            isLoading = false
+        } catch {
+            guard !Task.isCancelled, requestedIDs == favorites.favoriteIDs else { return }
+            didFail = true
+            isLoading = false
         }
     }
 }
 
 #Preview {
     FavoritesView(selectedTab: .constant("Favoriten"))
+        .environmentObject(AppEnvironment())
+        .environment(FavoritesStore())
 }

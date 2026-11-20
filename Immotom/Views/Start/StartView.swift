@@ -89,49 +89,32 @@ struct StartView: View {
                 }
                 .frame(maxWidth: .infinity)
 
-                // Footer-Buttons (unten fixiert)
+                // Suchaktion unten, bündig mit den Filterfeldern.
                 VStack {
                     Spacer()
-                    footerButtons
-                        .frame(height: 100)
+                    searchButton
+                        .frame(width: geometry.size.width * 0.85)
                 }
             }
         }
     }
 
-    // MARK: - Footer Buttons
+    // MARK: - Suche
 
-    /// Zwei Hauptaktionen: Suche + Karte
-    var footerButtons: some View {
-        HStack(spacing: 20) {
-
-            // Suche: schreibt Preisstrings in Int-Filter & wechselt Tab
-            Button(action: {
-                filters.minPrice = Int(minPriceStr)
-                filters.maxPrice = Int(maxPriceStr)
-                selectedTab = "Suche"
-            }) {
-                Label("Suche", systemImage: "magnifyingglass")
-                    .font(.headline)
-                    .foregroundColor(.black)
-                    .frame(maxWidth: .infinity)
-                    .frame(height: 50)
-                    .background(brandColor, in: Capsule())
-            }
-
-            // Karte: Tab wechseln
-            Button(action: {
-                selectedTab = "Karte"
-            }) {
-                Label("Karte", systemImage: "map")
-                    .font(.headline)
-                    .foregroundColor(.black)
-                    .frame(maxWidth: .infinity)
-                    .frame(height: 50)
-                    .background(brandColor, in: Capsule())
-            }
+    /// Hauptaktion über die gesamte Breite des Filterbereichs.
+    private var searchButton: some View {
+        Button {
+            filters.minPrice = Int(minPriceStr)
+            filters.maxPrice = Int(maxPriceStr)
+            selectedTab = "Suche"
+        } label: {
+            Label("Suche", systemImage: "magnifyingglass")
+                .font(.headline)
+                .foregroundStyle(.black)
+                .frame(maxWidth: .infinity)
+                .frame(minHeight: 50)
+                .background(brandColor, in: Capsule())
         }
-        .padding(.horizontal, 30)
         .padding(.bottom, 40)
     }
 

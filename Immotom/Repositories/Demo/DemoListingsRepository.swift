@@ -59,6 +59,10 @@ final class DemoListingsRepository: ListingsRepository {
         "3": .init(category: "Wohnung", rentBuy: "Mieten", priceValue: 950,    areaSqm: 55, rooms: 2, floor: "2"),
     ]
 
+    func listings(ids: Set<String>) async throws -> [Listing] {
+        demo.filter { ids.contains($0.id) }
+    }
+
     // MARK: - Search
 
     /// Demo-Suche: Radius + zusätzliche Filter.

@@ -8,4 +8,7 @@ protocol ListingsRepository {
     /// - Parameter filters: aktueller Filterzustand (Ort, Radius, Preis, Kategorie,…)
     /// - Returns: Liste von `Listing` für Ergebnisliste und Karte
     func search(filters: SearchFilters) async throws -> [Listing]
+
+    /// Lädt Favoriten unabhängig von den aktuellen Suchfiltern.
+    func listings(ids: Set<String>) async throws -> [Listing]
 }
