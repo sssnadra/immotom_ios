@@ -14,6 +14,7 @@ final class SearchViewModel: ObservableObject {
     /// Ladezustand der Suche.
     @Published private(set) var state: Loadable<[Listing]> = .idle
 
+    private var requestID = UUID()
     private var repo: ListingsRepository
 
     init(repo: ListingsRepository) {
@@ -27,11 +28,19 @@ final class SearchViewModel: ObservableObject {
 
     /// Führt die Suche aus und aktualisiert den UI-State.
     func search() async {
+        let currentRequest = UUID()
+        requestID = currentRequest
         state = .loading
         do {
             let results = try await repo.search(filters: filters)
+            guard requestID == currentRequest, !Task.isCancelled else { return }
             state = .loaded(results)
         } catch {
+            guard requestID == currentRequest else { return }
+            if Task.isCancelled || error is CancellationError || (error as? URLError)?.code == .cancelled {
+                state = .idle
+                return
+            }
             state = .failed(error.localizedDescription)
         }
     }

@@ -47,8 +47,13 @@ final class DetailViewModel: ObservableObject {
         state = .loading
         do {
             let detail = try await repo.fetchDetail(id: id)
+            try Task.checkCancellation()
             state = .loaded(detail)
         } catch {
+            if Task.isCancelled || error is CancellationError || (error as? URLError)?.code == .cancelled {
+                state = .idle
+                return
+            }
             state = .failed(error.localizedDescription)
         }
     }

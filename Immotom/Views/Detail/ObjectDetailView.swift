@@ -59,15 +59,19 @@ struct ObjectDetailView: View {
                                 }
                             }
 
-                            sectionContainer(title: d.descriptionTitle) {
-                                Text(d.description)
-                                    .font(.subheadline)
-                                    .foregroundColor(.primary.opacity(0.8))
-                                    .lineSpacing(4)
+                            if !d.description.isEmpty {
+                                sectionContainer(title: d.descriptionTitle) {
+                                    Text(d.description)
+                                        .font(.subheadline)
+                                        .foregroundColor(.primary.opacity(0.8))
+                                        .lineSpacing(4)
+                                }
                             }
 
-                            sectionContainer(title: d.contactTitle) {
-                                contactInfo(d)
+                            if !d.contactCompany.isEmpty || !d.contactPerson.isEmpty || !d.contactPhone.isEmpty || !d.contactEmail.isEmpty {
+                                sectionContainer(title: d.contactTitle) {
+                                    contactInfo(d)
+                                }
                             }
                         }
                         // Platz für Bottom-Bar
@@ -76,16 +80,25 @@ struct ObjectDetailView: View {
                     }
                 }
 
-                actionButtons(d)
+                if !d.contactPhone.isEmpty || !d.contactEmail.isEmpty {
+                    actionButtons(d)
+                }
             }
             .background(Color(.systemGroupedBackground).opacity(0.5))
 
         case .failed(let msg):
-            ContentUnavailableView(
-                "Fehler",
-                systemImage: "exclamationmark.triangle",
-                description: Text(msg)
-            )
+            VStack {
+                ContentUnavailableView(
+                    "Fehler",
+                    systemImage: "exclamationmark.triangle",
+                    description: Text(msg)
+                )
+                HStack {
+                    Button("Zurück") { dismiss() }
+                    Button("Erneut versuchen") { Task { await vm.load() } }
+                }
+                .padding()
+            }
         }
     }
 
@@ -94,11 +107,22 @@ struct ObjectDetailView: View {
     private func imageHeader(_ d: ListingDetail) -> some View {
         ZStack(alignment: .top) {
 
-            Image("house2")
-                .resizable()
-                .aspectRatio(16/9, contentMode: .fill)
-                .frame(maxWidth: UIScreen.main.bounds.width)
-                .clipped()
+            Group {
+                if let imageName = d.imageName {
+                    Image(imageName).resizable().scaledToFill()
+                } else if let url = d.imageURL {
+                    AsyncImage(url: url) { image in
+                        image.resizable().scaledToFill()
+                    } placeholder: {
+                        Color.gray.opacity(0.2)
+                    }
+                } else {
+                    Color.gray.opacity(0.2)
+                        .overlay { Image(systemName: "photo").font(.largeTitle) }
+                }
+            }
+            .frame(height: 250)
+            .clipped()
 
             HStack {
                 Button(action: { dismiss() }) {
@@ -266,5 +290,5 @@ struct ObjectDetailView: View {
     NavigationStack {
         ObjectDetailView(listingID: "1")
     }
-    .environmentObject(AppEnvironment())
+    .environmentObject(AppEnvironment(useDemoData: true))
 }

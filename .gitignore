@@ -1,0 +1,33 @@
+# Local documentation and coding-agent configuration
+/ressources/
+/AGENTS.md
+/.agents/
+/.codex/
+
+# macOS metadata
+.DS_Store
+._*
+
+# Personal Xcode settings
+xcuserdata/
+*.xcuserstate
+*.xccheckout
+*.xcscmblueprint
+
+# Generated builds, test results and Swift Package Manager cache
+/build/
+/DerivedData/
+.build/
+*.xcresult/
+*.ipa
+*.dSYM/
+*.dSYM.zip
+
+# Local credentials and environment configuration
+.env
+.env.*
+!.env.example
+!.env.sample
+/.aws/
+*.p12
+*.mobileprovision

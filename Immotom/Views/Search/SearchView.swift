@@ -35,6 +35,17 @@ struct SearchView: View {
                 .padding(.horizontal)
                 .padding(.bottom, 10)
 
+                if !env.usesDemoData {
+                    Text("Aktiv: Ort, Preis, Fläche, Zimmer, Mieten/Kaufen und Kategorie. Umkreis und weitere Ausstattungsfilter werden derzeit nicht angewendet.")
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                        .padding(.horizontal)
+                        .padding(.bottom, 8)
+                }
+
+                Button("Detailfilter") { isShowingFilters = true }
+                    .padding(.bottom, 8)
+
                 // Content abhängig vom Ladezustand
                 content
             }
@@ -42,7 +53,10 @@ struct SearchView: View {
         .navigationBarHidden(true)
 
         // Initiales Laden
-        .task {
+        .task(id: filters) {
+            do {
+                try await Task.sleep(for: .milliseconds(300))
+            } catch { return }
             // VM übernimmt die aktuellen Filter von außen
             vm.filters = filters
 
@@ -58,8 +72,7 @@ struct SearchView: View {
             FiltersView(filters: $filters, onApply: {
                 isShowingFilters = false
 
-                // Nach Apply erneut suchen
-                Task { await vm.search() }
+                // The task restarts automatically when filters change.
             })
         }
     }
@@ -76,7 +89,7 @@ struct SearchView: View {
                 ScrollView {
                     VStack(alignment: .leading, spacing: 16) {
                         
-                        Text("\(listings.count) von \(listings.count) Immobilien")
+                        Text(listings.isEmpty ? "Keine Immobilien gefunden" : "\(listings.count) Immobilien")
                             .font(.subheadline)
                             .foregroundColor(.secondary)
                             .frame(maxWidth: .infinity, alignment: .leading)
@@ -101,6 +114,12 @@ struct SearchView: View {
             VStack(spacing: 12) {
                 Text("Fehler beim Laden")
                     .font(.headline)
+                Button("Erneut versuchen") {
+                    Task {
+                        vm.filters = filters
+                        await vm.search()
+                    }
+                }
                 Text(msg)
                     .font(.subheadline)
                     .foregroundColor(.secondary)
