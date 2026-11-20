@@ -57,6 +57,24 @@ struct BackendTests {
         #expect(results.first?.imageName == nil)
     }
 
+    @Test func favoritesLoadByIDAndSkipUnavailableListings() async throws {
+        let fixture = Self.fixture(id: 7)
+        let session = session { request in
+            if request.url?.path == "/it/inserate/index/7" {
+                return (200, Data(fixture.utf8))
+            }
+            #expect(request.url?.path == "/it/inserate/index/8")
+            return (404, Data())
+        }
+        defer { session.invalidateAndCancel() }
+        let url = try #require(URL(string: "https://example.invalid"))
+        let repository = BackendListingsRepository(client: BackendClient(baseURL: url, session: session))
+        let results = try await repository.listings(ids: ["7", "8", "invalid"])
+        #expect(results.map(\.id) == ["7"])
+        let empty = try await repository.listings(ids: [])
+        #expect(empty.isEmpty)
+    }
+
     @Test func postcodeAndExactRooms() throws {
         var filters = SearchFilters.default
         filters.locationText = "4020"

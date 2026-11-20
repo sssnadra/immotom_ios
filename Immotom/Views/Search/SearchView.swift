@@ -96,12 +96,10 @@ struct SearchView: View {
                             .padding(.horizontal)
                         
                         ForEach(listings) { listing in
-                            NavigationLink {
-                                ObjectDetailView(listingID: listing.id)
-                            } label: {
-                                ListingCardView(listing: listing)
-                            }
-                            .buttonStyle(.plain)
+                            ListingCardView(
+                                listing: listing,
+                                showsFavoriteTip: listing.id == listings.first?.id
+                            )
                         }
                         
                         Spacer().frame(height: 90) // Platz für Floating Buttons

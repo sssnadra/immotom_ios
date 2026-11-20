@@ -147,6 +147,23 @@ struct BackendListingsRepository: ListingsRepository {
 
     init(client: BackendClient = BackendClient()) { self.client = client }
 
+    func listings(ids: Set<String>) async throws -> [Listing] {
+        var result: [Listing] = []
+        for id in ids.sorted() {
+            try Task.checkCancellation()
+            guard let number = Int32(id), number > 0 else { continue }
+            do {
+                let response: BackendListing = try await client.get("it/inserate/index/\(number)")
+                guard response.id == Int(number) else { throw BackendError.invalidResponse }
+                result.append(response.listing(client: client))
+            } catch BackendError.http(404) {
+                // Keep the favorite ID saved even when its listing is unavailable.
+                continue
+            }
+        }
+        return result
+    }
+
     func search(filters: SearchFilters) async throws -> [Listing] {
         let query = try Self.queryItems(filters: filters)
         var page = 0

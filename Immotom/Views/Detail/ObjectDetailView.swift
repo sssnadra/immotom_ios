@@ -17,8 +17,6 @@ struct ObjectDetailView: View {
 
     @StateObject private var vm: DetailViewModel
 
-    /// Favoritenstatus nur lokal für UI (keine Speicherung).
-    @State private var isFavorite = false
 
     init(listingID: String) {
         // ViewModel startet mit Demo-Repo – wird später via env ersetzt
@@ -136,14 +134,7 @@ struct ObjectDetailView: View {
 
                 Spacer()
 
-                Button(action: { isFavorite.toggle() }) {
-                    Image(systemName: isFavorite ? "heart.fill" : "heart")
-                        .font(.title3.bold())
-                        .padding(10)
-                        .background(.white.opacity(0.9))
-                        .clipShape(Circle())
-                        .foregroundColor(isFavorite ? .red : .black)
-                }
+                FavoriteButton(listingID: d.id, listingTitle: d.title)
             }
             .padding(.horizontal)
             .padding(.top, 60)
@@ -291,4 +282,5 @@ struct ObjectDetailView: View {
         ObjectDetailView(listingID: "1")
     }
     .environmentObject(AppEnvironment(useDemoData: true))
+    .environment(FavoritesStore())
 }
