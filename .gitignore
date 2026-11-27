@@ -1,8 +1,8 @@
 # Local documentation and coding-agent configuration
 /ressources/
-/AGENTS.md
-/.agents/
-/.codex/
+AGENTS.md
+.agents/
+.codex/
 
 # macOS metadata
 .DS_Store
