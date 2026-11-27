@@ -57,19 +57,8 @@ struct ListingCardView: View {
         .padding(.horizontal)
     }
 
-    @ViewBuilder
     private var listingImage: some View {
-        if let imageName = listing.imageName {
-            Image(imageName).resizable()
-        } else if let url = listing.imageURL {
-            AsyncImage(url: url) { image in
-                image.resizable()
-            } placeholder: {
-                Color.gray.opacity(0.3)
-            }
-        } else {
-            Rectangle().fill(Color.gray.opacity(0.2))
-        }
+        ListingPhotoView(url: listing.imageURL, imageName: listing.imageName)
     }
 }
 
