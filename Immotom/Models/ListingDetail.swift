@@ -34,6 +34,9 @@ struct ListingDetail: Identifiable {
     /// Optional: lokaler Asset-Name (z.B. "house1")
     let imageName: String?
 
+    /// Preview first, followed by the remaining unique remote images.
+    var imageURLs: [URL] = []
+
     // MARK: - Objektinformation
 
     let infoTitle: String

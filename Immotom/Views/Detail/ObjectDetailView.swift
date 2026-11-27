@@ -16,6 +16,7 @@ struct ObjectDetailView: View {
     @EnvironmentObject private var env: AppEnvironment
 
     @StateObject private var vm: DetailViewModel
+    @State private var showsGallery = false
 
 
     init(listingID: String) {
@@ -105,22 +106,31 @@ struct ObjectDetailView: View {
     private func imageHeader(_ d: ListingDetail) -> some View {
         ZStack(alignment: .top) {
 
-            Group {
-                if let imageName = d.imageName {
-                    Image(imageName).resizable().scaledToFill()
-                } else if let url = d.imageURL {
-                    AsyncImage(url: url) { image in
-                        image.resizable().scaledToFill()
-                    } placeholder: {
-                        Color.gray.opacity(0.2)
+            Button {
+                showsGallery = true
+            } label: {
+                ListingPhotoView(url: d.imageURL, imageName: d.imageName)
+                    .frame(height: 250)
+                    .overlay(alignment: .bottomTrailing) {
+                        if d.imageURL != nil || d.imageName != nil {
+                            Label("Bilder ansehen", systemImage: "photo.on.rectangle")
+                                .font(.subheadline.bold())
+                                .padding(10)
+                                .background(.regularMaterial, in: Capsule())
+                                .padding(.trailing)
+                                .padding(.bottom, 40)
+                        }
                     }
-                } else {
-                    Color.gray.opacity(0.2)
-                        .overlay { Image(systemName: "photo").font(.largeTitle) }
-                }
             }
-            .frame(height: 250)
-            .clipped()
+            .buttonStyle(.plain)
+            .disabled(d.imageURL == nil && d.imageName == nil)
+            .accessibilityLabel("Bildergalerie öffnen")
+            .fullScreenCover(isPresented: $showsGallery) {
+                ListingGalleryView(
+                    urls: d.imageURLs.isEmpty ? d.imageURL.map { [$0] } ?? [] : d.imageURLs,
+                    imageName: d.imageName
+                )
+            }
 
             HStack {
                 Button(action: { dismiss() }) {

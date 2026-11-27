@@ -74,7 +74,7 @@ struct SideMenuView: View {
 
                 // MARK: - Menu Items
                 VStack(spacing: 15) {
-                    SideMenuOption(title: "Andere Kategorie?", icon: "line.3.horizontal.decrease", tab: "Start", selectedTab: $selectedTab, isShowing: $isShowing)
+                    SideMenuOption(title: "Home", icon: "line.3.horizontal.decrease", tab: "Start", selectedTab: $selectedTab, isShowing: $isShowing)
                     SideMenuOption(title: "Listensuchen", icon: "magnifyingglass", tab: "Suche", selectedTab: $selectedTab, isShowing: $isShowing)
                     SideMenuOption(title: "Favoriten", icon: "star", tab: "Favoriten", selectedTab: $selectedTab, isShowing: $isShowing)
                     SideMenuOption(title: "Anmelden", icon: "person", tab: "Login", selectedTab: $selectedTab, isShowing: $isShowing)

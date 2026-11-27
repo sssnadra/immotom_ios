@@ -58,10 +58,10 @@ struct SearchFilters: Hashable {
 
     // MARK: - Default
 
-    /// Default-Filterzustand beim App-Start.
-    /// Zentrum ist Linz (Koordinaten fix vorbelegt).
+    /// Default-Filterzustand beim App-Start ohne Ortsauswahl.
+    /// Die Koordinaten dienen weiterhin als Zentrum der Demo-Umkreissuche.
     static let `default` = SearchFilters(
-        locationText: "Linz",
+        locationText: "",
         centerLatitude: 48.3069,
         centerLongitude: 14.2858,
         radiusKm: 5,

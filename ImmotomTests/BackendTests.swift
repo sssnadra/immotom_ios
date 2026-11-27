@@ -106,6 +106,38 @@ struct BackendTests {
         #expect(detail.metaMid == "75 m²")
     }
 
+    @Test func galleryMapsMediaAndRemovesDuplicatePreview() throws {
+        let json = Self.fixture(id: 7).replacingOccurrences(
+            of: "\"description\":",
+            with: """
+            "image_col":[{"id":1,"file_url":"/uploads/house.jpg"},
+            {"id":2,"file_url":"/uploads/room.jpg"},
+            {"id":3,"file_url":"https://cdn.example.invalid/garden.jpg"},
+            {"id":4,"file_url":""},{"id":5,"file_url":"file:///private/photo.jpg"}],
+            "description":
+            """
+        )
+        let response = try JSONDecoder().decode(BackendListing.self, from: Data(json.utf8))
+        let url = try #require(URL(string: "https://example.invalid"))
+        let detail = response.detail(client: BackendClient(baseURL: url))
+        #expect(detail.imageURLs.map(\.absoluteString) == [
+            "https://example.invalid/uploads/house.jpg",
+            "https://example.invalid/uploads/room.jpg",
+            "https://cdn.example.invalid/garden.jpg"
+        ])
+        #expect(detail.imageURL == detail.imageURLs.first)
+    }
+
+    @Test func galleryFallsBackToPreviewWithoutMediaCollection() throws {
+        let response = try JSONDecoder().decode(
+            BackendListing.self, from: Data(Self.fixture(id: 7).utf8)
+        )
+        let url = try #require(URL(string: "https://example.invalid"))
+        let client = BackendClient(baseURL: url)
+        #expect(response.detail(client: client).imageURLs == [client.imageURL(response.image)])
+        #expect(client.imageURL("   ") == nil)
+    }
+
     @Test(arguments: [404, 500])
     func httpErrors(status: Int) async throws {
         let session = session { _ in (status, Data()) }

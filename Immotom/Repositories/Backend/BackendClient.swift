@@ -72,6 +72,7 @@ struct BackendClient {
     }
 
     func imageURL(_ path: String) -> URL? {
+        let path = path.trimmingCharacters(in: .whitespacesAndNewlines)
         guard !path.isEmpty, let baseURL,
               let url = URL(string: path, relativeTo: baseURL.appendingPathComponent("/"))?.absoluteURL,
               ["https", "http"].contains(url.scheme?.lowercased() ?? "") else { return nil }
@@ -85,6 +86,11 @@ struct BackendPage: Decodable {
 }
 
 /// Field names intentionally match ListingSmallDTO / ListingBigDTO in the backend.
+struct BackendMedia: Decodable {
+    let id: Int64
+    let file_url: String
+}
+
 struct BackendListing: Decodable {
     let id: Int
     let title: String
@@ -97,6 +103,7 @@ struct BackendListing: Decodable {
     let area: Int
     let rooms: Int
     let image: String
+    let image_col: [BackendMedia]?
     let description: String?
     let availability: String?
     let contact_company: String?
@@ -126,11 +133,15 @@ struct BackendListing: Decodable {
     func detail(client: BackendClient) -> ListingDetail {
         var pairs = [("Zimmer", String(rooms)), ("Wohnfläche", "\(area) m²")]
         if let availability, !availability.isEmpty { pairs.append(("Verfügbarkeit", availability)) }
+        var seen = Set<URL>()
+        let imageURLs = ([image] + (image_col ?? []).map(\.file_url))
+            .compactMap { client.imageURL($0) }
+            .filter { seen.insert($0).inserted }
         return ListingDetail(
             id: String(id), title: title, price: priceText,
             street: street, zipCity: zipCity,
             metaLeft: "\(rooms) Zimmer", metaMid: "\(area) m²", metaRight: "Wohnfläche",
-            imageURL: client.imageURL(image), imageName: nil,
+            imageURL: imageURLs.first, imageName: nil, imageURLs: imageURLs,
             infoTitle: "Objektinformation", infoPairs: pairs,
             descriptionTitle: "Beschreibung", description: description ?? "",
             contactTitle: "Kontaktdaten",

@@ -8,6 +8,11 @@
 
 /* Begin PBXBuildFile section */
 		9C38D0E42F2E8E56000D8347 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 9C38D0E32F2E8E56000D8347 /* Assets.xcassets */; };
+		BAC1D2DC30B056B90098086E /* AGENTS.md in Resources */ = {isa = PBXBuildFile; fileRef = BAC1D2DB30B056B90098086E /* AGENTS.md */; };
+		BAC1D2DF30B05BBE0098086E /* iOS-session1.pdf in Resources */ = {isa = PBXBuildFile; fileRef = BAC1D2DD30B05BBE0098086E /* iOS-session1.pdf */; };
+		BAC1D39930B98AEA0098086E /* iOS-session2.pdf in Resources */ = {isa = PBXBuildFile; fileRef = BAC1D39830B98AEA0098086E /* iOS-session2.pdf */; };
+		BAC1D39C30B98B730098086E /* iOS-session3.pdf in Resources */ = {isa = PBXBuildFile; fileRef = BAC1D39A30B98B730098086E /* iOS-session3.pdf */; };
+		BAC1D39D30B98B730098086E /* iOS-session4.pdf in Resources */ = {isa = PBXBuildFile; fileRef = BAC1D39B30B98B730098086E /* iOS-session4.pdf */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -32,6 +37,11 @@
 		9C68222E2F2E3E750048AE98 /* Immotom.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Immotom.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		9C68223D2F2E3E750048AE98 /* ImmotomTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = ImmotomTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		9C6822472F2E3E750048AE98 /* ImmotomUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = ImmotomUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		BAC1D2DB30B056B90098086E /* AGENTS.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = AGENTS.md; sourceTree = "<group>"; };
+		BAC1D2DD30B05BBE0098086E /* iOS-session1.pdf */ = {isa = PBXFileReference; lastKnownFileType = image.pdf; path = "iOS-session1.pdf"; sourceTree = "<group>"; };
+		BAC1D39830B98AEA0098086E /* iOS-session2.pdf */ = {isa = PBXFileReference; lastKnownFileType = image.pdf; path = "iOS-session2.pdf"; sourceTree = "<group>"; };
+		BAC1D39A30B98B730098086E /* iOS-session3.pdf */ = {isa = PBXFileReference; lastKnownFileType = image.pdf; path = "iOS-session3.pdf"; sourceTree = "<group>"; };
+		BAC1D39B30B98B730098086E /* iOS-session4.pdf */ = {isa = PBXFileReference; lastKnownFileType = image.pdf; path = "iOS-session4.pdf"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
@@ -80,6 +90,8 @@
 		9C6822252F2E3E750048AE98 = {
 			isa = PBXGroup;
 			children = (
+				BAC1D2DE30B05BBE0098086E /* ressources */,
+				BAC1D2DB30B056B90098086E /* AGENTS.md */,
 				9C38D0E32F2E8E56000D8347 /* Assets.xcassets */,
 				9C6822B92F2E3EA70048AE98 /* Immotom */,
 				9C6822402F2E3E750048AE98 /* ImmotomTests */,
@@ -96,6 +108,17 @@
 				9C6822472F2E3E750048AE98 /* ImmotomUITests.xctest */,
 			);
 			name = Products;
+			sourceTree = "<group>";
+		};
+		BAC1D2DE30B05BBE0098086E /* ressources */ = {
+			isa = PBXGroup;
+			children = (
+				BAC1D39A30B98B730098086E /* iOS-session3.pdf */,
+				BAC1D39B30B98B730098086E /* iOS-session4.pdf */,
+				BAC1D39830B98AEA0098086E /* iOS-session2.pdf */,
+				BAC1D2DD30B05BBE0098086E /* iOS-session1.pdf */,
+			);
+			path = ressources;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -220,6 +243,11 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				BAC1D39C30B98B730098086E /* iOS-session3.pdf in Resources */,
+				BAC1D39D30B98B730098086E /* iOS-session4.pdf in Resources */,
+				BAC1D2DF30B05BBE0098086E /* iOS-session1.pdf in Resources */,
+				BAC1D2DC30B056B90098086E /* AGENTS.md in Resources */,
+				BAC1D39930B98AEA0098086E /* iOS-session2.pdf in Resources */,
 				9C38D0E42F2E8E56000D8347 /* Assets.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
