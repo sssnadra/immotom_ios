@@ -22,6 +22,7 @@ struct AppHeader: View {
                     .scaledToFit()
                     .frame(width: 45, height: 45)
                     .clipShape(RoundedRectangle(cornerRadius: 10))
+                    .accessibilityHidden(true)
 
                 // Titel + Untertitel
                 VStack(alignment: .leading, spacing: 0) {
@@ -29,6 +30,7 @@ struct AppHeader: View {
                     Text("Find Your Home").font(.caption)
                 }
                 .foregroundColor(.black)
+                .accessibilityElement(children: .combine)
 
                 Spacer()
 
@@ -41,8 +43,10 @@ struct AppHeader: View {
                             .font(.title2)
                             .foregroundColor(.black)
                             .padding(8)
+                            .frame(minWidth: 44, minHeight: 44)
                             .background(Color.white.opacity(0.5), in: Circle())
                     }
+                    .accessibilityLabel(VoiceOverLabels.openMenu)
                 }
             }
             .padding(.horizontal, 25)

@@ -2,6 +2,7 @@ import SwiftUI
 
 /// Detail-Filter
 struct FiltersView: View {
+    @Environment(\.dismiss) private var dismiss
     @Binding var filters: SearchFilters
     var onApply: () -> Void
 
@@ -25,51 +26,62 @@ struct FiltersView: View {
             VStack(spacing: 0) {
                 ScrollView {
                     VStack(alignment: .leading, spacing: 18) {
-                        Text("Detail Filter")
-                            .font(.title).bold()
-                            .padding(.top, 10)
+                        HStack {
+                            Text("Detail Filter")
+                                .font(.title).bold()
+                                .accessibilityAddTraits(.isHeader)
+                            Spacer()
+                            Button {
+                                dismiss()
+                            } label: {
+                                Image(systemName: "xmark")
+                                    .frame(minWidth: 44, minHeight: 44)
+                            }
+                            .accessibilityLabel(VoiceOverLabels.closeFilters)
+                        }
+                        .padding(.top, 10)
 
                         Group {
                             filterLabel(text: "Fläche (m²)")
                             HStack(spacing: 12) {
-                                customTextField(placeholder: "Min. Fläche", text: $minAreaText)
-                                customTextField(placeholder: "Max. Fläche", text: $maxAreaText)
+                                customTextField(placeholder: "Min. Fläche", text: $minAreaText, label: VoiceOverLabels.minimumArea)
+                                customTextField(placeholder: "Max. Fläche", text: $maxAreaText, label: VoiceOverLabels.maximumArea)
                             }
 
                             filterLabel(text: "Zimmeranzahl")
-                            customDropdown(selection: $filters.rooms, options: zimmerOptionen)
+                            customDropdown(selection: $filters.rooms, options: zimmerOptionen, label: "Zimmeranzahl")
 
                             filterLabel(text: "Stockwerk")
-                            customDropdown(selection: $filters.floor, options: stockwerkOptionen)
+                            customDropdown(selection: $filters.floor, options: stockwerkOptionen, label: "Stockwerk")
                         }
 
                         Group {
                             filterLabel(text: "Balkon / Terrasse")
-                            customDropdown(selection: $filters.hasBalkony, options: jaNeinOptionen)
+                            customDropdown(selection: $filters.hasBalkony, options: jaNeinOptionen, label: "Balkon oder Terrasse")
 
                             filterLabel(text: "Aufzug")
-                            customDropdown(selection: $filters.hasElevator, options: jaNeinOptionen)
+                            customDropdown(selection: $filters.hasElevator, options: jaNeinOptionen, label: "Aufzug")
 
                             filterLabel(text: "Kellerabteil")
-                            customDropdown(selection: $filters.hasCellar, options: jaNeinOptionen)
+                            customDropdown(selection: $filters.hasCellar, options: jaNeinOptionen, label: "Kellerabteil")
 
                             filterLabel(text: "Heizungsart")
-                            customDropdown(selection: $filters.heatingType, options: heizungOptionen)
+                            customDropdown(selection: $filters.heatingType, options: heizungOptionen, label: "Heizungsart")
 
                             filterLabel(text: "Bauform")
-                            customDropdown(selection: $filters.buildingType, options: bauformOptionen)
+                            customDropdown(selection: $filters.buildingType, options: bauformOptionen, label: "Bauform")
 
                             filterLabel(text: "Möbliert")
-                            customDropdown(selection: $filters.isFurnished, options: jaNeinOptionen)
+                            customDropdown(selection: $filters.isFurnished, options: jaNeinOptionen, label: "Möbliert")
 
                             filterLabel(text: "Energieklasse")
-                            customDropdown(selection: $filters.energyClass, options: energieOptionen)
+                            customDropdown(selection: $filters.energyClass, options: energieOptionen, label: "Energieklasse")
 
                             filterLabel(text: "Haustiere")
-                            customDropdown(selection: $filters.petsAllowed, options: haustierOptionen)
+                            customDropdown(selection: $filters.petsAllowed, options: haustierOptionen, label: "Haustiere")
 
                             filterLabel(text: "Barrierefreiheit")
-                            customDropdown(selection: $filters.isAccessible, options: jaNeinOptionen)
+                            customDropdown(selection: $filters.isAccessible, options: jaNeinOptionen, label: "Barrierefreiheit")
                         }
 
                         // Platz, damit der Bottom-Button nichts überdeckt
@@ -83,6 +95,7 @@ struct FiltersView: View {
             filterBottomButton
         }
         .ignoresSafeArea(edges: .top)
+        .accessibilityAction(.escape) { dismiss() }
 
         // MARK: - Initial Sync
         .onAppear {
@@ -118,6 +131,7 @@ struct FiltersView: View {
                     .cornerRadius(12)
             }
             .padding(.horizontal, 25)
+            .accessibilityLabel(VoiceOverLabels.applyFilters)
             .padding(.bottom, 20)
         }
         .background(
@@ -136,20 +150,23 @@ struct FiltersView: View {
             .font(.subheadline)
             .bold()
             .padding(.bottom, -10)
+            .accessibilityAddTraits(.isHeader)
     }
 
-    private func customTextField(placeholder: String, text: Binding<String>) -> some View {
+    private func customTextField(placeholder: String, text: Binding<String>, label: LocalizedStringKey) -> some View {
         TextField(placeholder, text: text)
             .padding(12)
             .background(Color(white: 0.9))
             .cornerRadius(8)
             .keyboardType(.numberPad)
+            .accessibilityLabel(label)
     }
 
-    private func customDropdown(selection: Binding<String>, options: [String]) -> some View {
+    private func customDropdown(selection: Binding<String>, options: [String], label: LocalizedStringKey) -> some View {
         Menu {
             ForEach(options, id: \.self) { option in
                 Button(option) { selection.wrappedValue = option }
+                    .accessibilityAddTraits(selection.wrappedValue == option ? .isSelected : [])
             }
         } label: {
             HStack {
@@ -164,6 +181,8 @@ struct FiltersView: View {
             .background(Color(white: 0.9))
             .cornerRadius(8)
         }
+        .accessibilityLabel(label)
+        .accessibilityValue(VoiceOverLabels.selectionValue(selection.wrappedValue))
     }
 
     // MARK: - Parsing Helper

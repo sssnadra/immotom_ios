@@ -40,6 +40,7 @@ struct ObjectDetailView: View {
         switch vm.state {
         case .idle, .loading:
             ProgressView()
+                .accessibilityLabel(VoiceOverLabels.loadingDetails)
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
 
         case .loaded(let d):
@@ -121,16 +122,21 @@ struct ObjectDetailView: View {
             }
             .frame(height: 250)
             .clipped()
+            .accessibilityElement(children: .ignore)
+            .accessibilityLabel(VoiceOverLabels.propertyImage(title: d.title, hasImage: d.imageName != nil || d.imageURL != nil))
+            .accessibilityAddTraits(.isImage)
 
             HStack {
                 Button(action: { dismiss() }) {
                     Image(systemName: "chevron.left")
                         .font(.title3.bold())
                         .padding(10)
+                        .frame(minWidth: 44, minHeight: 44)
                         .background(.white.opacity(0.9))
                         .clipShape(Circle())
                         .foregroundColor(.black)
                 }
+                .accessibilityLabel(VoiceOverLabels.back)
 
                 Spacer()
 
@@ -144,9 +150,11 @@ struct ObjectDetailView: View {
     // MARK: - Main Card (Titel/Adresse/Preis + Meta)
 
     private func mainInfoCard(_ d: ListingDetail) -> some View {
-        VStack(alignment: .leading, spacing: 10) {
+        let spokenMetadata = VoiceOverLabels.metadata([d.metaLeft, d.metaMid, d.metaRight])
+        return VStack(alignment: .leading, spacing: 10) {
             Text(d.title)
                 .font(.title3.bold())
+                .accessibilityAddTraits(.isHeader)
 
             HStack(alignment: .bottom) {
                 VStack(alignment: .leading, spacing: 4) {
@@ -155,10 +163,12 @@ struct ObjectDetailView: View {
                 }
                 .font(.subheadline)
                 .foregroundColor(.secondary)
+                .accessibilityElement(children: .combine)
 
                 Spacer()
 
                 Text(formatPrice(d.price))
+                    .accessibilityLabel(VoiceOverLabels.price(d.price))
                     .font(.headline)
                     .padding(.horizontal, 16)
                     .padding(.vertical, 10)
@@ -172,6 +182,8 @@ struct ObjectDetailView: View {
             Text("\(d.metaLeft)  •  \(d.metaMid)  •  \(d.metaRight)")
                 .font(.caption.bold())
                 .foregroundColor(.primary.opacity(0.7))
+                .accessibilityLabel(Text(spokenMetadata))
+                .accessibilityHidden(spokenMetadata.isEmpty)
         }
         .padding(20)
         .background(Color.white)
@@ -194,6 +206,8 @@ struct ObjectDetailView: View {
                         .font(.subheadline.weight(.semibold))
                 }
                 .frame(maxWidth: .infinity, alignment: .leading)
+                .accessibilityElement(children: .ignore)
+                .accessibilityLabel(VoiceOverLabels.detail(label: k, value: v))
             }
         }
     }
@@ -206,6 +220,7 @@ struct ObjectDetailView: View {
     ) -> some View {
         VStack(alignment: .leading, spacing: 15) {
             Text(title).font(.headline)
+                .accessibilityAddTraits(.isHeader)
             Divider()
             content()
         }
@@ -232,6 +247,7 @@ struct ObjectDetailView: View {
             Image("ic_logo")
                 .resizable()
                 .frame(width: 50, height: 50)
+                .accessibilityHidden(true)
         }
     }
 
@@ -250,6 +266,7 @@ struct ObjectDetailView: View {
                     .foregroundColor(.white)
                     .cornerRadius(12)
             }
+            .accessibilityHint(VoiceOverLabels.unavailable)
 
             Button(action: {
                 // TODO: Mail-Aktion
@@ -262,6 +279,7 @@ struct ObjectDetailView: View {
                     .foregroundColor(.white)
                     .cornerRadius(12)
             }
+            .accessibilityHint(VoiceOverLabels.unavailable)
         }
         .padding(.horizontal)
         .padding(.top, 20)

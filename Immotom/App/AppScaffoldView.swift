@@ -52,6 +52,7 @@ struct AppScaffoldView: View {
 
             // Wenn Menü offen ist, werden Interaktionen im Hintergrund deaktiviert.
             .disabled(isMenuShowing)
+            .accessibilityHidden(isMenuShowing)
 
             // Menü + dunkles Overlay
             if isMenuShowing {
@@ -59,6 +60,7 @@ struct AppScaffoldView: View {
                 Color.black.opacity(0.3)
                     .ignoresSafeArea()
                     .onTapGesture { isMenuShowing = false }
+                    .accessibilityHidden(true)
                     .zIndex(9)
 
                 // Menü selbst

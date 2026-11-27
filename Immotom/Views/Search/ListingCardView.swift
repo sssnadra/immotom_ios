@@ -27,6 +27,7 @@ struct ListingCardView: View {
                             .foregroundStyle(.secondary)
                         Text("\(listing.price) €")
                             .font(.headline)
+                            .accessibilityLabel(VoiceOverLabels.price(listing.price))
                             .padding(.horizontal, 16)
                             .padding(.vertical, 8)
                             .foregroundStyle(.black)
@@ -42,7 +43,7 @@ struct ListingCardView: View {
             }
             .buttonStyle(.plain)
             .accessibilityElement(children: .combine)
-            .accessibilityHint("Öffnet die Details dieser Immobilie")
+            .accessibilityHint(VoiceOverLabels.openDetails)
 
             FavoriteButton(
                 listingID: listing.id,
@@ -51,6 +52,7 @@ struct ListingCardView: View {
             )
                 .padding(12)
         }
+        .accessibilityElement(children: .contain)
         .shadow(color: .black.opacity(0.1), radius: 10, x: 0, y: 5)
         .padding(.horizontal)
     }

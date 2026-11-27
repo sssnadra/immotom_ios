@@ -25,9 +25,11 @@ struct SearchView: View {
                 HStack {
                     Image(systemName: "magnifyingglass")
                         .foregroundColor(.gray)
+                        .accessibilityHidden(true)
 
                     TextField("Suche nach Stadt, PLZ oder Adresse", text: $filters.locationText)
                         .textFieldStyle(.plain)
+                        .accessibilityLabel(VoiceOverLabels.searchLocation)
                 }
                 .padding()
                 .background(Color(.systemGray6))
@@ -43,7 +45,13 @@ struct SearchView: View {
                         .padding(.bottom, 8)
                 }
 
-                Button("Detailfilter") { isShowingFilters = true }
+                Button {
+                    isShowingFilters = true
+                } label: {
+                    Text("Detailfilter")
+                        .frame(minWidth: 44, minHeight: 44)
+                        .contentShape(Rectangle())
+                }
                     .padding(.bottom, 8)
 
                 // Content abhängig vom Ladezustand
@@ -82,6 +90,7 @@ struct SearchView: View {
         switch vm.state {
         case .loading:
             ProgressView()
+                .accessibilityLabel(VoiceOverLabels.loadingListings)
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
 
         case .loaded(let listings):
@@ -89,8 +98,9 @@ struct SearchView: View {
                 ScrollView {
                     VStack(alignment: .leading, spacing: 16) {
                         
-                        Text(listings.isEmpty ? "Keine Immobilien gefunden" : "\(listings.count) Immobilien")
+                        Text(VoiceOverLabels.resultCount(listings.count))
                             .font(.subheadline)
+                            .accessibilityAddTraits(.isHeader)
                             .foregroundColor(.secondary)
                             .frame(maxWidth: .infinity, alignment: .leading)
                             .padding(.horizontal)
@@ -112,6 +122,7 @@ struct SearchView: View {
             VStack(spacing: 12) {
                 Text("Fehler beim Laden")
                     .font(.headline)
+                    .accessibilityAddTraits(.isHeader)
                 Button("Erneut versuchen") {
                     Task {
                         vm.filters = filters

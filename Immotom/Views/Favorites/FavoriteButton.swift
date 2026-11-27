@@ -46,8 +46,8 @@ struct FavoriteButton: View {
                 favorites.dismissHint()
             }
         }
-        .accessibilityLabel(favorites.contains(listingID) ? "Aus Favoriten entfernen" : "Zu Favoriten hinzufügen")
-        .accessibilityValue(Text("\(listingTitle), \(favorites.contains(listingID) ? "Gespeichert" : "Nicht gespeichert")"))
+        .accessibilityLabel(VoiceOverLabels.favoriteAction(title: listingTitle, isFavorite: favorites.contains(listingID)))
+        .accessibilityValue(VoiceOverLabels.favoriteState(favorites.contains(listingID)))
         .accessibilityIdentifier("favorite-\(listingID)")
     }
 }

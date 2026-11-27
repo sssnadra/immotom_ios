@@ -16,6 +16,7 @@ struct SideMenuOption: View {
             HStack {
                 Image(systemName: icon)
                     .frame(width: 25)
+                    .accessibilityHidden(true)
                 Text(title)
                 Spacer()
             }
@@ -25,6 +26,8 @@ struct SideMenuOption: View {
             .cornerRadius(8)
             .shadow(color: .black.opacity(0.1), radius: 2, x: 0, y: 2)
         }
+        .accessibilityLabel(Text(title))
+        .accessibilityAddTraits(selectedTab == tab ? .isSelected : [])
     }
 }
 
@@ -34,6 +37,7 @@ struct SideMenuOption: View {
 /// - `isShowing`: steuert Ein-/Ausblenden
 /// - `selectedTab`: bestimmt den aktiven Screen in `AppScaffoldView`
 struct SideMenuView: View {
+    @AccessibilityFocusState private var closeButtonFocused: Bool
     @Binding var isShowing: Bool
     @Binding var selectedTab: String
 
@@ -51,9 +55,11 @@ struct SideMenuView: View {
                             .scaledToFit()
                             .frame(width: 50, height: 50)
                             .background(Color.white.cornerRadius(10))
+                            .accessibilityHidden(true)
 
                         VStack(alignment: .leading) {
                             Text("Immotom").font(.title3).bold()
+                                .accessibilityAddTraits(.isHeader)
                             Text("Find Your Home").font(.caption)
                         }
 
@@ -64,7 +70,10 @@ struct SideMenuView: View {
                             Image(systemName: "line.3.horizontal")
                                 .font(.title)
                                 .foregroundColor(.black)
+                                .frame(minWidth: 44, minHeight: 44)
                         }
+                        .accessibilityLabel(VoiceOverLabels.closeMenu)
+                        .accessibilityFocused($closeButtonFocused)
                     }
                     .padding(.top, 60)
                     .padding(.horizontal)
@@ -89,7 +98,11 @@ struct SideMenuView: View {
         }
 
         // Hintergrundoverlay: Tap schließt Menü
-        .background(Color.black.opacity(0.3).onTapGesture { isShowing = false })
+        .background(Color.black.opacity(0.3).onTapGesture { isShowing = false }.accessibilityHidden(true))
+        .accessibilityElement(children: .contain)
+        .accessibilityAddTraits(.isModal)
+        .accessibilityAction(.escape) { isShowing = false }
+        .task { closeButtonFocused = true }
     }
 }
 

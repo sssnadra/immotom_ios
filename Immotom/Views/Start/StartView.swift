@@ -39,6 +39,7 @@ struct StartView: View {
                     .clipped()
                     .ignoresSafeArea()
                     .overlay(Color.black.opacity(0.3))
+                    .accessibilityHidden(true)
 
                 // Filterbereich
                 VStack(spacing: 15) {
@@ -46,28 +47,31 @@ struct StartView: View {
 
                     Group {
                         filterSection(title: "Kaufen oder Mieten", width: geometry.size.width * 0.85) {
-                            customMenuPicker(selection: $filters.rentBuy, options: rentBuyOptions)
+                            customMenuPicker(selection: $filters.rentBuy, options: rentBuyOptions, label: "Kaufen oder Mieten")
                         }
 
                         filterSection(title: "Kategorie", width: geometry.size.width * 0.85) {
-                            customMenuPicker(selection: $filters.category, options: categoryOptions)
+                            customMenuPicker(selection: $filters.category, options: categoryOptions, label: "Immobilienkategorie")
                         }
 
                         filterSection(title: "Preis", width: geometry.size.width * 0.85) {
                             HStack(spacing: 12) {
-                                priceField(placeholder: "Min.", text: $minPriceStr)
-                                Text("–").foregroundColor(.white).bold()
-                                priceField(placeholder: "Max.", text: $maxPriceStr)
+                                priceField(placeholder: "Min.", text: $minPriceStr, label: VoiceOverLabels.minimumPrice)
+                                Text("–").foregroundColor(.white).bold().accessibilityHidden(true)
+                                priceField(placeholder: "Max.", text: $maxPriceStr, label: VoiceOverLabels.maximumPrice)
                             }
                         }
 
                         filterSection(title: "Umkreis", width: geometry.size.width * 0.85) {
                             VStack(spacing: 5) {
-                                Slider(value: $filters.radiusKm, in: 0...50)
+                                Slider(value: $filters.radiusKm, in: 0...50, step: 1)
+                                    .accessibilityLabel(VoiceOverLabels.radius)
+                                    .accessibilityValue(VoiceOverLabels.radiusValue(filters.radiusKm))
                                     .tint(brandColor)
                                 Text("\(Int(filters.radiusKm)) km")
                                     .foregroundColor(.white)
                                     .bold()
+                                    .accessibilityHidden(true)
                             }
                         }
 
@@ -75,10 +79,12 @@ struct StartView: View {
                             HStack {
                                 TextField("Ort, PLZ...", text: $filters.locationText)
                                     .textFieldStyle(.plain)
+                                    .accessibilityLabel(VoiceOverLabels.location)
                                     .foregroundColor(.black)
 
                                 Image(systemName: "magnifyingglass")
                                     .foregroundColor(.gray)
+                                    .accessibilityHidden(true)
                             }
                             .padding(12)
                             .background(Color.white, in: RoundedRectangle(cornerRadius: 10))
@@ -115,16 +121,18 @@ struct StartView: View {
                 .frame(minHeight: 50)
                 .background(brandColor, in: Capsule())
         }
+        .accessibilityLabel(VoiceOverLabels.search)
         .padding(.bottom, 40)
     }
 
     // MARK: - UI Helper
 
     /// Custom `Menu`-Picker, damit er wie ein eigenes Feld aussieht.
-    func customMenuPicker(selection: Binding<String>, options: [String]) -> some View {
+    func customMenuPicker(selection: Binding<String>, options: [String], label: LocalizedStringKey) -> some View {
         Menu {
             ForEach(options, id: \.self) { option in
                 Button(option) { selection.wrappedValue = option }
+                    .accessibilityAddTraits(selection.wrappedValue == option ? .isSelected : [])
             }
         } label: {
             HStack {
@@ -137,6 +145,8 @@ struct StartView: View {
             .padding(12)
             .background(Color.white, in: RoundedRectangle(cornerRadius: 10))
         }
+        .accessibilityLabel(label)
+        .accessibilityValue(VoiceOverLabels.selectionValue(selection.wrappedValue))
     }
 
     /// Wrapper für ein "Filter-Block" Label + Content.
@@ -150,6 +160,7 @@ struct StartView: View {
                 .font(.subheadline)
                 .bold()
                 .foregroundColor(.white)
+                .accessibilityAddTraits(.isHeader)
 
             content()
         }
@@ -157,11 +168,12 @@ struct StartView: View {
     }
 
     /// Preis-Feld mit NumberPad.
-    func priceField(placeholder: String, text: Binding<String>) -> some View {
+    func priceField(placeholder: String, text: Binding<String>, label: LocalizedStringKey) -> some View {
         TextField(placeholder, text: text)
             .padding(12)
             .background(Color.white, in: RoundedRectangle(cornerRadius: 10))
             .keyboardType(.numberPad)
+            .accessibilityLabel(label)
     }
 }
 
